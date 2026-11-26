@@ -324,6 +324,29 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
   .tl-inner{min-width:620px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.name span i{transform:none}}
+
+/* music */
+.music{position:fixed;left:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 8px;border-radius:14px;background:rgba(19,13,34,.82);border:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:0 18px 50px -20px rgba(0,0,0,.8);cursor:pointer;opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s,border-color .3s}
+.music.show{opacity:1;transform:none}
+.music:hover{border-color:var(--vio)}
+.music.on{border-color:rgba(255,62,165,.55)}
+.mv{position:relative;width:72px;height:40px;border-radius:8px;overflow:hidden;background:#000;flex:none}
+.mv iframe{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;border:0}
+.mt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.mt small{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--vio2);display:flex;align-items:center;gap:6px}
+.music.on .mt small{color:var(--mag)}
+.mt b{font-size:13.5px;margin-top:3px}
+.mt span{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:9px}
+.eq i{width:2px;height:3px;background:currentColor;border-radius:1px}
+.music.on .eq i{animation:eq .9s ease-in-out infinite}
+.music.on .eq i:nth-child(2){animation-delay:-.3s}.music.on .eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{0%,100%{height:3px}50%{height:9px}}
+.mbtn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);color:var(--ink);flex:none}
+.mbtn svg{width:16px;height:16px}
+.music.on .mbtn{background:var(--mag);border-color:var(--mag)}
+.music.err .mt small{color:var(--dim)}
+@media (max-width:820px){.music{left:10px;bottom:10px;gap:9px;padding:6px}.mv{width:52px;height:30px}.mt span{display:none}}
 </style>
 </head>
 <body>
@@ -509,6 +532,11 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;paddin
     </div>
   </div>
 </section>
+<div class="music" id="music" role="region" aria-label="Background music">
+  <div class="mv"><div id="ytm"></div></div>
+  <div class="mt"><small><span class="eq"><i></i><i></i><i></i></span><em id="mState" style="font-style:normal">Tap anywhere for sound</em></small><b>Lonely</b><span>Justin Bieber &amp; benny blanco</span></div>
+  <button class="mbtn" id="mBtn" aria-label="Turn music on"></button>
+</div>
 <footer><span>© 2026 Pham Tri Thuc · ThucPT</span><span><span class="en">Made with AI, cut by hand</span></span></footer>
 
 <script>
@@ -645,6 +673,30 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 $('#copy').onclick=()=>{navigator.clipboard?.writeText('pthuc0123@gmail.com');const b=$('#copy'),o=b.innerHTML;b.textContent='✓';setTimeout(()=>b.innerHTML=o,1400)};
 
 showFilm(0);showStep(0);onProc();
+
+// background music: official YouTube video, preloaded muted after the page has loaded, sound on at the first tap or key
+(()=>{const VID='xQOO2xGQ1Pc',box=$('#music'),st=$('#mState'),btn=$('#mBtn');
+ const ICON_ON='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 4V5L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+ const ICON_OFF='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 4V5L7 9H3zm13.6 3 2.7-2.7-1.4-1.4-2.7 2.7-2.7-2.7-1.4 1.4 2.7 2.7-2.7 2.7 1.4 1.4 2.7-2.7 2.7 2.7 1.4-1.4z"/></svg>';
+ let yp=null,ready=false,unlocked=false,justUnlocked=false,failed=false,want=localStorage.getItem('music')!=='off';
+ const sync=()=>{const on=ready&&unlocked&&want&&!failed;box.classList.toggle('on',on);btn.innerHTML=on?ICON_ON:ICON_OFF;
+  btn.setAttribute('aria-label',on?'Mute music':'Turn music on');
+  st.textContent=failed?'Music unavailable':!unlocked&&want?'Tap anywhere for sound':on?'Now playing':'Music off'};
+ const apply=()=>{if(!ready)return;if(unlocked&&want){yp.unMute();yp.setVolume(45);yp.playVideo()}else yp.mute();sync()};
+ const unlock=()=>{if(unlocked)return;unlocked=true;justUnlocked=true;setTimeout(()=>justUnlocked=false,0);apply();
+  ['pointerdown','keydown','touchend'].forEach(ev=>removeEventListener(ev,unlock,true))};
+ ['pointerdown','keydown','touchend'].forEach(ev=>addEventListener(ev,unlock,true));
+ const toggle=e=>{e.stopPropagation();if(justUnlocked&&want){sync();return}want=!want;localStorage.setItem('music',want?'on':'off');apply()};
+ btn.onclick=toggle;box.addEventListener('click',e=>{if(e.target.closest('#mBtn'))return;toggle(e)});
+ sync();
+ window.onYouTubeIframeAPIReady=()=>{yp=new YT.Player('ytm',{videoId:VID,host:'https://www.youtube-nocookie.com',
+  playerVars:{autoplay:1,mute:0,loop:1,playlist:VID,controls:0,playsinline:1,rel:0,disablekb:1,iv_load_policy:3,fs:0},
+  events:{onReady:e=>{ready=true;box.classList.add('show');if(!want){e.target.mute();e.target.playVideo();sync();return}e.target.unMute();e.target.setVolume(45);e.target.playVideo();setTimeout(()=>{if(unlocked)return;if(yp.getPlayerState()===1&&!yp.isMuted()){unlocked=true;['pointerdown','keydown','touchend'].forEach(ev=>removeEventListener(ev,unlock,true));sync()}else{yp.mute();yp.playVideo();sync()}},1500)},
+   onStateChange:e=>{if(e.data===0){yp.seekTo(0);yp.playVideo()}},
+   onError:()=>{failed=true;box.remove()}}})};
+ const load=()=>setTimeout(()=>{const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';sc.async=true;document.head.appendChild(sc)},600);
+ document.readyState==='complete'?load():addEventListener('load',load);
+})();
 </script>
 </body>
 </html>
