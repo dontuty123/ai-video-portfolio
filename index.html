@@ -756,7 +756,7 @@ showFilm(0);showStep(0);onProc();
  const I_PAUSE=svg('M7 5h4v14H7zM13 5h4v14h-4z'),I_PLAY=svg('M8 5v14l11-7z');
  const OFF_EVTS=['pointerdown','keydown','touchend'];
  let yp=null,ready=false,unlocked=false,justUnlocked=false,paused=false,
-     want=localStorage.getItem('music')!=='off',level=+(localStorage.getItem('musicVol')||40);
+     want=(localStorage.removeItem('music'),true),level=+(localStorage.getItem('musicVol')||40);
  const audible=()=>ready&&unlocked&&want&&level>0;
  const sync=()=>{const on=audible();box.classList.toggle('on',on);box.classList.toggle('paused',paused);
   btn.innerHTML=!on?I_OFF:level<50?I_LOW:I_ON;btn.setAttribute('aria-label',on?'Mute music':'Turn music on');
@@ -769,9 +769,9 @@ showFilm(0);showStep(0);onProc();
   OFF_EVTS.forEach(ev=>removeEventListener(ev,unlock,true))};
  OFF_EVTS.forEach(ev=>addEventListener(ev,unlock,true));
  btn.onclick=e=>{e.stopPropagation();if(justUnlocked&&want)return sync();want=!want;if(want&&level===0)level=40;
-  localStorage.setItem('music',want?'on':'off');apply()};
+  apply()};
  pbtn.onclick=e=>{e.stopPropagation();paused=!paused;apply()};
- vol.oninput=()=>{level=+vol.value;want=level>0;localStorage.setItem('musicVol',level||40);localStorage.setItem('music',want?'on':'off');apply()};
+ vol.oninput=()=>{level=+vol.value;want=level>0;localStorage.setItem('musicVol',level||40);apply()};
  vol.addEventListener('pointerdown',e=>e.stopPropagation());
  sync();
  window.onYouTubeIframeAPIReady=()=>{yp=new YT.Player('ytm',{videoId:VID,host:'https://www.youtube-nocookie.com',
@@ -788,7 +788,7 @@ showFilm(0);showStep(0);onProc();
  const load=()=>setTimeout(()=>{const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';sc.async=true;document.head.appendChild(sc)},gated?0:600);
  gated||document.readyState==='complete'?load():addEventListener('load',load);
  const gate=document.getElementById('gate');
- if(gate){const enter=withSound=>{if(!withSound){want=false;apply()}sessionStorage.setItem('entered','1');
+ if(gate){const enter=withSound=>{want=withSound;if(withSound&&level===0)level=40;apply();sessionStorage.setItem('entered','1');
     gate.classList.add('out');document.documentElement.classList.remove('gated');setTimeout(()=>gate.remove(),1300)};
   $('#gGo').onclick=()=>enter(true);$('#gNo').onclick=()=>enter(false);
   addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('gate')&&!gate.classList.contains('out'))enter(true)});}
