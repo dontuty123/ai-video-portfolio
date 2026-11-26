@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pham Tri Thuc · AI Filmmaker</title>
-<meta name="description" content="Pham Tri Thuc (ThucPT) — AI filmmaker. Writer, director and editor of films made with AI.">
-<meta property="og:title" content="Pham Tri Thuc · AI Filmmaker">
+<title>Thuc Pham · AI Filmmaker</title>
+<meta name="description" content="Thuc Pham (ThucPT) — AI filmmaker. Writer, director and editor of films made with AI.">
+<meta property="og:title" content="Thuc Pham · AI Filmmaker">
 <meta property="og:description" content="Writer · Director · Editor — films made with AI.">
 <meta property="og:image" content="assets/avatar-sq.jpg">
 <link rel="icon" href="assets/icon.png">
@@ -383,6 +383,22 @@ html.clapped,html.clapped body{overflow:hidden}
 @media (max-width:820px){.cgate .cg-hud{left:64px;right:64px;font-size:9.5px}.cgate .cg-hud.b span:last-child{display:none}.cg-slate{width:86vw;transform:translate(-50%,-54%) rotate(-2deg)}.cgate .cg-cue{bottom:20%;font-size:11px}.cg-cur{display:none}.cgate.cg-cursor:auto}}
 @media (prefers-reduced-motion:reduce){.cgate .cg-grain,.cg-cur::before,.cgate .cg-cue{animation:none}}
 
+/* cursor light */
+.lux{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:0;transition:opacity .6s;
+  background:radial-gradient(520px circle at var(--mx,50%) var(--my,50%),rgba(124,60,255,.22),rgba(255,62,165,.10) 35%,transparent 70%);mix-blend-mode:screen}
+.lux::after{content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(243,238,252,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(243,238,252,.07) 1px,transparent 1px);background-size:44px 44px;
+  -webkit-mask:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#000,transparent 70%);mask:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),#000,transparent 70%)}
+.lux.on{opacity:1}
+.ring{position:fixed;left:0;top:0;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;border:1.5px solid rgba(243,238,252,.55);pointer-events:none;z-index:96;opacity:0;transition:opacity .3s,width .25s,height .25s,margin .25s,border-color .25s,background .25s}
+.ring.on{opacity:1}
+.ring.hot{width:58px;height:58px;margin:-29px 0 0 -29px;border-color:var(--mag);background:rgba(255,62,165,.12)}
+.ring.down{width:26px;height:26px;margin:-13px 0 0 -13px}
+.ring::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--mag)}
+html.clapped .lux,html.clapped .ring{opacity:0!important}
+@media (pointer:coarse),(max-width:820px){.lux,.ring{display:none}}
+@media (prefers-reduced-motion:reduce){.lux,.ring{display:none}}
+
 /* music */
 .music{position:fixed;left:18px;bottom:18px;z-index:60;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 8px;border-radius:14px;background:rgba(19,13,34,.82);border:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:0 18px 50px -20px rgba(0,0,0,.8);opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s,border-color .3s}
 .music.show{opacity:1;transform:none}
@@ -430,7 +446,7 @@ html.clapped,html.clapped body{overflow:hidden}
     <div class="cg-board"><div class="cg-rows">
       <div class="cg-r"><div class="cg-cell"><small>Production</small><b>THUC<em>.</em>PT</b></div></div>
       <div class="cg-r"><div class="cg-cell"><small>Scene</small><b>01 · Portfolio</b></div><div class="cg-cell"><small>Take</small><b>1</b></div></div>
-      <div class="cg-r"><div class="cg-cell"><small>Director</small><b class="cg-chalk">Pham Tri Thuc</b></div><div class="cg-cell"><small>Sound</small><b class="cg-chalk">Lonely · 40%</b></div></div>
+      <div class="cg-r"><div class="cg-cell"><small>Director</small><b class="cg-chalk">Thuc Pham</b></div><div class="cg-cell"><small>Sound</small><b class="cg-chalk">Lonely · 40%</b></div></div>
     </div></div>
   </div>
   <div class="cg-cue" id="clapCue">Click anywhere to roll</div>
@@ -438,6 +454,7 @@ html.clapped,html.clapped body{overflow:hidden}
   <div class="cg-flash"></div>
 </div>
 <div class="cg-cur" id="cur"><span>ROLL</span></div>
+<div class="lux" id="lux"></div><div class="ring" id="ring"></div>
 <script>document.documentElement.classList.add('clapped')</script>
 
 <nav class="nav" id="nav">
@@ -459,13 +476,12 @@ html.clapped,html.clapped body{overflow:hidden}
     <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
     <div class="rec">REC</div>
     <div class="tc" id="tc">00:00:00:00</div>
-    <div class="focus"></div>
     <div class="meta">A001_C007 · 24 FPS · 180° · ISO 800 · 16:9</div>
     <div class="bat">AI ▮▮▮▮▯</div>
   </div>
   <div class="copy">
     <div class="kick"><span class="en">AI filmmaker · Ho Chi Minh City</span></div>
-    <h1 class="name"><span><i class="glow">Pham</i></span><span><i class="ghost">Tri Thuc</i></span></h1>
+    <h1 class="name"><span><i class="glow">Thuc</i></span><span><i class="ghost">Pham</i></span></h1>
     <p class="role en">I <b>write, direct and cut</b> films made with AI — from the first line of script to the last sound cut.</p>
     <div class="ctas">
       <a class="btn hot" href="#films"><span class="dot">▶</span><span class="en">Watch the films</span></a>
@@ -595,8 +611,8 @@ html.clapped,html.clapped body{overflow:hidden}
     <div class="reveal">
       <div class="label"><b>05</b><span class="en">About</span></div>
       <h2 class="big"><span class="en">Story first.<br><i>AI second.</i></span></h2>
-      <p class="lead en">I'm Pham Tri Thuc. I take a film from idea to final cut on my own: script, characters, shots, generation, edit and sound. Years of software work taught me to build pipelines that make AI films repeatable, not lucky.</p>
-      <div class="badge"><img src="assets/avatar-sq.jpg" alt=""><div><small>ThucPT</small><b><span class="en">Pham Tri Thuc</span></b></div></div>
+      <p class="lead en">I'm Thuc Pham. I take a film from idea to final cut on my own: script, characters, shots, generation, edit and sound. Years of software work taught me to build pipelines that make AI films repeatable, not lucky.</p>
+      <div class="badge"><img src="assets/avatar-sq.jpg" alt=""><div><small>ThucPT</small><b><span class="en">Thuc Pham</span></b></div></div>
     </div>
     <div class="rows reveal">
       <div class="row"><small>01</small><div><b><span class="en">AI Filmmaker</span></b><span class="en">Writer · director · editor</span></div><em>2026 —</em></div>
@@ -632,7 +648,7 @@ html.clapped,html.clapped body{overflow:hidden}
     </div>
   </div>
 </div>
-<footer><span>© 2026 Pham Tri Thuc · ThucPT</span><span><span class="en">Made with AI, cut by hand</span></span></footer>
+<footer><span>© 2026 Thuc Pham · ThucPT</span><span><span class="en">Made with AI, cut by hand</span></span></footer>
 
 <script>
 const FILMS=[
@@ -804,10 +820,16 @@ showFilm(0);showStep(0);onProc();
     setTimeout(()=>{if(unlocked)return;
       if(yp.getPlayerState()===1&&!yp.isMuted()){unlocked=true;OFF_EVTS.forEach(ev=>removeEventListener(ev,unlock,true));sync();window.__clapAuto&&window.__clapAuto(true)}
       else{yp.mute();if(!paused)yp.playVideo();sync();window.__clapAuto&&window.__clapAuto(false)}},1500)},
-   onStateChange:e=>{if(e.data===0){yp.seekTo(0);if(!paused)yp.playVideo()}},
+   onStateChange:e=>{const d=yp.getVideoData&&yp.getVideoData();if(d&&d.video_id&&d.video_id!==VID){yp.loadVideoById(VID);return}
+    if(e.data===0){yp.seekTo(0);if(!paused)yp.playVideo()}},
    onError:()=>{box.remove();window.__clapAuto&&window.__clapAuto(false)}}})};
  const load=()=>setTimeout(()=>{const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';sc.async=true;document.head.appendChild(sc)},0);
  load();
+ // tab away: hold the music; tab back: carry on
+ let heldByTab=false;
+ document.addEventListener('visibilitychange',()=>{if(!ready)return;
+  if(document.hidden){if(!paused){heldByTab=true;yp.pauseVideo()}}
+  else if(heldByTab){heldByTab=false;if(!paused)yp.playVideo()}});
  // clap gate handshake
  const gate=document.getElementById('clap');
  window.__clapEnter=()=>{want=true;if(level===0)level=40;apply()};
@@ -831,6 +853,18 @@ showFilm(0);showStep(0);onProc();
  window.__clapAuto=ok=>{if(decided)return;decided=true;if(ok)roll(true);else{cue.textContent=fine?'Click anywhere to roll':'Tap anywhere to roll'}};
  // never trap anyone: if nothing happens, open the set anyway (music stays muted until their first tap)
  setTimeout(()=>{if(!done){done=true;g.classList.add('out');document.documentElement.classList.remove('clapped');cur.remove();setTimeout(()=>g.remove(),1500)}},12000);
+})();
+
+// cursor light: eased spotlight + grid reveal + ring cursor
+(()=>{if(!matchMedia('(pointer:fine)').matches)return;const lux=$('#lux'),ring=$('#ring');if(!lux)return;
+ let tx=innerWidth/2,ty=innerHeight/2,x=tx,y=ty,rx=tx,ry=ty,live=false;
+ addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;if(!live){live=true;x=tx;y=ty;rx=tx;ry=ty;lux.classList.add('on');ring.classList.add('on')}
+  const hot=e.target.closest&&e.target.closest('a,button,.cell,.pcard,.slate,.sticker,input');ring.classList.toggle('hot',!!hot)},{passive:true});
+ addEventListener('pointerdown',()=>ring.classList.add('down'),true);addEventListener('pointerup',()=>ring.classList.remove('down'),true);
+ document.addEventListener('mouseleave',()=>{lux.classList.remove('on');ring.classList.remove('on')});
+ document.addEventListener('mouseenter',()=>{if(live){lux.classList.add('on');ring.classList.add('on')}});
+ const tick=()=>{x+=(tx-x)*.08;y+=(ty-y)*.08;rx+=(tx-rx)*.35;ry+=(ty-ry)*.35;
+  lux.style.setProperty('--mx',x+'px');lux.style.setProperty('--my',y+'px');ring.style.transform='translate('+rx+'px,'+ry+'px)';requestAnimationFrame(tick)};tick();
 })();
 </script>
 </body>
