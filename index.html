@@ -791,8 +791,7 @@ showFilm(0);showStep(0);onProc();
  if(gate){const enter=withSound=>{if(!withSound){want=false;apply()}sessionStorage.setItem('entered','1');
     gate.classList.add('out');document.documentElement.classList.remove('gated');setTimeout(()=>gate.remove(),1300)};
   $('#gGo').onclick=()=>enter(true);$('#gNo').onclick=()=>enter(false);
-  addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('gate')&&!gate.classList.contains('out'))enter(true)});
-  setTimeout(()=>$('#gGo').focus({preventScroll:true}),300)}
+  addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('gate')&&!gate.classList.contains('out'))enter(true)});}
 })();
 </script>
 </body>
